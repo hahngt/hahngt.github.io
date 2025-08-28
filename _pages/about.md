@@ -15,6 +15,11 @@ news: false # includes a list of news items
 selected_papers: false # includes a list of papers marked as "selected={true}"
 social: false # includes social icons at the bottom of the page
 
+latest_posts:
+  enabled: true
+  scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
+  limit: 3 # leave blank to include all the blog posts
+
 ---
 
 I'm interested in developing an efficient learning framework that can mimic human multisensory reasoning, primarily visual, and designing models that enable natural interactions with humans in various situations.

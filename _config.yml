@@ -134,9 +134,9 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: ImT Reviewer # blog_name will be displayed in your blog page
-blog_description: Swimming in the sea of Papers
-permalink: /blog/:year/:title/
+blog_name: Daily Papers # blog_name will be displayed in your blog page
+blog_description: 
+permalink: /dailypaper/:title/
 lsi: false # produce an index for related posts
 
 # Pagination
@@ -197,6 +197,11 @@ collections:
       layout: post
     output: false
     permalink: /:collection/:title/
+  dailypapers:
+    defaults:
+      layout: post
+    output: false
+    permalink: /:collection/:title/
   projects:
     output: true
     permalink: /:collection/:title/
@@ -207,7 +212,7 @@ announcements:
   limit: 5 # leave blank to include all the news in the `_news` folder
 
 latest_posts:
-  enabled: false
+  enabled: true
   scrollable: true # adds a vertical scroll bar if there are more than 3 new posts items
   limit: 3 # leave blank to include all the blog posts
 
@@ -303,12 +308,12 @@ jekyll-archives:
     tag: archive-tag
     category: archive-category
   permalinks:
-    year: "/blog/:year/"
-    tag: "/blog/tag/:name/"
-    category: "/blog/category/:name/"
+    year: "/dailypaper/:year/"
+    tag: "/dailypaper/tag/:name/"
+    category: "/dailypaper/category/:name/"
 
-display_tags: [] #["formatting", "images", "links", "math", "code", "blockquotes"] # these tags will be displayed on the front page of your blog
-display_categories: ["Papers", "Math"] # these categories will be displayed on the front page of your blog
+display_tags: ["Papers", "HuggingFace", "Arxiv"] #["formatting", "images", "links", "math", "code", "blockquotes"] # these tags will be displayed on the front page of your blog
+display_categories: [] # these categories will be displayed on the front page of your blog
 
 # -----------------------------------------------------------------------------
 # Jekyll Scholar
