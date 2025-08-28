@@ -2,9 +2,9 @@
 layout: page
 title: DailyPapers
 permalink: /dailypaper/
-nav: true          # 또는 navbar: true  (2안에서 확인)
-navbar: true          # 또는 navbar: true  (2안에서 확인)
-order: 2   
+nav: true # 또는 navbar: true  (2안에서 확인)
+navbar: true # 또는 navbar: true  (2안에서 확인)
+order: 2
 pagination:
   enabled: true
   collection: posts
@@ -16,7 +16,6 @@ pagination:
     before: 1 # The number of links before the current page
     after: 3 # The number of links after the current page
 ---
-
 
 <div class="post">
 

@@ -4,7 +4,7 @@
 
 title: blank # the website title (if blank, full name will be used instead)
 first_name: Gyutak
-middle_name: 
+middle_name:
 last_name: Hahn
 email: gue707@naver.com
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
@@ -18,7 +18,7 @@ lang: ko # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: 📸 #/assets/img/favicons/favicon-32x32.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
 url: https://hahngt.github.io # the base hostname & protocol for your site
-baseurl:   # the subpath of your site, e.g. /blog/. Leave blank for root
+baseurl: # the subpath of your site, e.g. /blog/. Leave blank for root
 last_updated: false # set to true if you want to display last updated in the footer
 impressum_path: # set to path to include impressum link in the footer, use the same path as permalink in a page, helps to conform with EU GDPR
 back_to_top: true # set to false to disable the back to top button
@@ -135,7 +135,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # -----------------------------------------------------------------------------
 
 blog_name: Daily Papers # blog_name will be displayed in your blog page
-blog_description: 
+blog_description:
 permalink: /dailypaper/:title/
 lsi: false # produce an index for related posts
 
@@ -160,7 +160,7 @@ giscus:
   input_position: top # whether to display input form below (bottom) or above (top) the comments
   theme: preferred_color_scheme # name of the color scheme (preferred works well with al-folio light/dark mode)
   emit_metadata: 0
-  lang: 
+  lang:
   loading: "lazy"
 
 # Disqus comments (DEPRECATED)

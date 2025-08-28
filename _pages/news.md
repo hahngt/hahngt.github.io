@@ -4,7 +4,6 @@ title: news
 permalink: /news/
 ---
 
-
 <div class="post">
 
 {% assign blog_name_size = site.blog_name | size %}
