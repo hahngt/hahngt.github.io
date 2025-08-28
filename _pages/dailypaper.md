@@ -1,7 +1,7 @@
 ---
 layout: page
-title: news
-permalink: /news/
+title: DailyPapers
+permalink: /_posts/
 ---
 
 
