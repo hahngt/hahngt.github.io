@@ -1,1 +1,8 @@
 nbconvert
+requests
+beautifulsoup4
+openai>=1.40.0
+tenacity
+python-dateutil
+tzdata
+pdfminer.six
