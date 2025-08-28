@@ -79,8 +79,10 @@ jobs:
       - name: Link check _site
         uses: lycheeverse/lychee-action@v1
         with:
-          args: >
+          args: >-
             --no-progress --verbose
             --accept 200,206,403,429
             --max-retries 3 --retry-wait-time 2
+            --exclude-file .lycheeignore
+            --scheme https,http
             "_site/**/*.html"
