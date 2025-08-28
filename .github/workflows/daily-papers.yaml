@@ -75,3 +75,12 @@ jobs:
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
+      - name: Link check _site
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: >
+            --no-progress --verbose
+            --accept 200,206,403,429
+            --max-retries 3 --retry-wait-time 2
+            "_site/**/*.html"
