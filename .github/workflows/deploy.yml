@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - main
+    workflow_run:
+      workflows: ["Daily HF Papers"] # daily-papers.yaml의 name과 동일하게
+      types: [completed]
     paths:
       - "assets/**"
       - "**.bib"
