@@ -60,7 +60,7 @@ jobs:
       - name: Build with Jekyll 🔧
         env:
           JEKYLL_ENV: production
-        run: bundle exec jekyll build --trace -d _site
+        run: bundle exec jekyll build --trace --future -d _site
 
       - name: Purge unused CSS 🧹
         run: |
