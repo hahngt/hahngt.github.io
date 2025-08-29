@@ -190,8 +190,6 @@ def summarize_with_gpt(client, item):
 {text}
 
 [출력 스켈레톤]
-제목: {title}
-arXiv: {link}
 ## Introduction
 - Goal: (정확히 1문장)
 - Motivation: (정확히 1문장)
@@ -279,7 +277,7 @@ def main():
     body = []
     for i, it in enumerate(items, 1):
         link = it.get("arxiv_url") or it["hf_url"]
-        body.append(f"### {i}. [{it['title']}]({link})")
+        body.append(f"# {i}. [{it['title'].replace('\n',' ')}]({link})")
         body.append("")
         body.append(it["summary_ko"])
         body.append("")
