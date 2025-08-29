@@ -216,7 +216,7 @@ def summarize_with_gpt(client, item):
             r = client.responses.create(
                 model=os.getenv("OPENAI_MODEL","gpt-4.1-mini"),
                 input=prompt,
-                max_output_tokens=int(os.getenv("MAX_OUT_TOKENS","300")),
+                # max_output_tokens=int(os.getenv("MAX_OUT_TOKENS","300")),
             )
             return r.output_text.strip()
         except openai.RateLimitError as e:
