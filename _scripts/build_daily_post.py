@@ -242,7 +242,7 @@ def main():
 
     # 5) 파일 저장
     slug = "daily-papers"
-    out_path = f"{OUT_DIR}/{DATE_STR}-{slug}.m  "
+    out_path = f"{OUT_DIR}/{DATE_STR}-{slug}.md"
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(md)
     print(f"Wrote {out_path}")
