@@ -6,3 +6,4 @@ tenacity
 python-dateutil
 tzdata
 pdfminer.six
+pymupdf>=1.24
