@@ -270,6 +270,7 @@ def main():
         f'title: Daily Papers — {DATE_STR}"',
         f"date: {DATE_STR} 08:15:00",
         "tags: [papers, arxiv, ai]",
+        "categories: []",
         "---",
         "",
         "",
