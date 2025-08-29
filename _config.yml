@@ -136,7 +136,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 
 blog_name: Daily Papers # blog_name will be displayed in your blog page
 blog_description:
-permalink: /dailypaper/:title/
+permalink: /dailypaper/:year/:month/:day/:title/
 lsi: false # produce an index for related posts
 
 # Pagination

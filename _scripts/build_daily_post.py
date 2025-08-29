@@ -278,7 +278,8 @@ def main():
     body = []
     for i, it in enumerate(items, 1):
         link = it.get("arxiv_url") or it["hf_url"]
-        body.append(f"# {i}. [{it['title'].replace('\n',' ')}]({link})")
+        title_one = it["title"].replace("\n", " ")
+        body.append(f"# {i}. [{title_one}]({link})")
         body.append("")
         body.append(it["summary_ko"])
         body.append("")
@@ -286,7 +287,7 @@ def main():
 
     # 5) 파일 저장
     slug = "daily-papers"
-    out_path = f"{OUT_DIR}/{DATE_STR}-{slug}.md"
+    out_path = f"{OUT_DIR}/{DATE_STR}-{slug}_{DATE_STR.replace('-','')}.md"
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(md)
     print(f"Wrote {out_path}")
