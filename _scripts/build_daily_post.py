@@ -127,15 +127,27 @@ def fetch_arxiv_abstract(arxiv_abs_url):
     # "Abstract:" 접두 제거
     return re.sub(r"^\s*Abstract:\s*", "", txt, flags=re.I)
 
-def fetch_arxiv_pdf_text(pdf_url: str, max_chars: int = 8000) -> str:
+def fetch_arxiv_pdf_text(pdf_url, max_chars=120000):
     if not pdf_url:
         return ""
-    import io
-    from pdfminer.high_level import extract_text
-    r = get(pdf_url)  # 기존 get() 재사용(헤더/재시도 포함)
-    text = extract_text(io.BytesIO(r.content)) or ""
-    text = text.replace("\x00", " ").strip()
-    return text[:max_chars]
+    url = pdf_url
+    if "/abs/" in url:
+        url = url.replace("/abs/", "/pdf/") + ("" if url.endswith(".pdf") else ".pdf")
+    r = get(url)  # 기존 get() 재사용
+    import fitz  # PyMuPDF
+    doc = fitz.open(stream=r.content, filetype="pdf")
+    chunks = []
+    total = 0
+    for page in doc:
+        t = page.get_text("text")
+        if not t:
+            t = page.get_text()  # fallback
+        take = max_chars - total
+        chunks.append(t[:take])
+        total += len(chunks[-1])
+        if total >= max_chars:
+            break
+    return "".join(chunks)
 
 def summarize_with_gpt(client, item):
     title = item["title"]
@@ -198,26 +210,30 @@ def main():
     # 상한 n개
     N = int(os.getenv("N","10"))
     paper_urls = paper_urls[:N]
-
+    # print("paper_urls : ", len(paper_urls))
     # 2) 각 논문 상세 파싱 + arXiv 초록/PDF
     items = []
     for u in paper_urls:
         meta = parse_paper_page(u)
         meta["abstract"] = fetch_arxiv_abstract(meta["arxiv_url"]) if meta.get("arxiv_url") else ""
         # PDF 있으면 본문 텍스트 사용
-        pdf_text = fetch_arxiv_pdf_text(meta.get("pdf_url"), max_chars=int(os.getenv("PDF_MAX_CHARS","120000"))) if meta.get("pdf_url") else ""
+        pdf_text = fetch_arxiv_pdf_text(meta.get("pdf_url"), max_chars=int(os.getenv("PDF_MAX_CHARS","40000"))) if meta.get("pdf_url") else ""
         meta["source_text"] = pdf_text if pdf_text else meta["abstract"]
         items.append(meta)
         time.sleep(0.5)
-    seen = _load_seen(SEEN_DB)
-    if EXCLUDE_UPLOADED:
-        items = [it for it in items if it.get("key") and it["key"] not in seen]
+    # print("items : ", len(items))
+    
+    # seen = _load_seen(SEEN_DB)
+    # if EXCLUDE_UPLOADED:
+    #     items = [it for it in items if it.get("key") and it["key"] not in seen]
+    # print("filtered items : ", len(items))
 
     # 3) 요약
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     for it in items:
         it["summary_ko"] = summarize_with_gpt(client, it)
-        time.sleep(0.2)
+        time.sleep(3)
+    # print("filtered items : ", len(items))
 
     # 4) Markdown 생성
     kst_now = dt.datetime.now(KST)
@@ -247,9 +263,9 @@ def main():
         f.write(md)
     print(f"Wrote {out_path}")
     
-    new_keys = {it["key"] for it in items if it.get("key")}
-    seen |= new_keys
-    _save_seen(SEEN_DB, seen)
+    # new_keys = {it["key"] for it in items if it.get("key")}
+    # seen |= new_keys
+    # _save_seen(SEEN_DB, seen)
 
 if __name__ == "__main__":
     main()
