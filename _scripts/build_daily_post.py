@@ -6,6 +6,23 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 from urllib.parse import urljoin, urlparse
 from openai import OpenAI
 
+# 전역
+import math, openai
+
+RPM_LIMIT = int(os.getenv("OPENAI_RPM_LIMIT","3"))
+_rpm_win = time.monotonic(); _rpm_used = 0
+
+def rpm_guard(n=1):
+    global _rpm_win, _rpm_used
+    now = time.monotonic()
+    if now - _rpm_win >= 60:
+        _rpm_win = now; _rpm_used = 0
+    if _rpm_used + n > RPM_LIMIT:
+        sleep = 60 - (now - _rpm_win) + 0.5
+        if sleep > 0: time.sleep(sleep)
+        _rpm_win = time.monotonic(); _rpm_used = 0
+    _rpm_used += n
+
 KST = tz.gettz("Asia/Seoul")
 TODAY_KST = dt.datetime.now(KST).date()
 DATE_STR = os.getenv("DATE", str(TODAY_KST))  # 재실행/백필 시 DATE=YYYY-MM-DD 로 override
@@ -190,11 +207,23 @@ arXiv: {link}
 
 
 """
-    r = client.responses.create(
-        model=os.getenv("OPENAI_MODEL","gpt-4.1-mini"),
-        input=prompt,
-    )
-    return r.output_text.strip()
+    # r = client.responses.create(
+    #     model=os.getenv("OPENAI_MODEL","gpt-4.1-mini"),
+    #     input=prompt,
+    # )
+    # return r.output_text.strip()
+    rpm_guard(1)                 # 호출 직전
+    for _ in range(6):           # 최대 6회 백오프
+        try:
+            r = client.responses.create(
+                model=os.getenv("OPENAI_MODEL","gpt-4.1-mini"),
+                input=prompt,
+                max_output_tokens=int(os.getenv("MAX_OUT_TOKENS","300")),
+            )
+            return r.output_text.strip()
+        except openai.RateLimitError as e:
+            time.sleep(22)       # RPM/TPM 초과 공통 대기
+    raise RuntimeError("OpenAI rate limit persistent")
 
 def main():
     # 1) Daily 목록 수집
