@@ -48,6 +48,7 @@ jobs:
           EXCLUDE_UPLOADED: "1"
           SEEN_DB: "_scripts/seen_papers.txt"
         run: python _scripts/build_daily_post.py
+        run: python _scripts/build_daily_arxiv.py
 
       # 생성물 커밋
       - name: Commit & push generated posts and seen db

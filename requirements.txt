@@ -7,3 +7,7 @@ python-dateutil
 tzdata
 pdfminer.six
 pymupdf>=1.24
+beautifulsoup4>=4.12.2
+lxml>=5.1.0
+
+tqdm

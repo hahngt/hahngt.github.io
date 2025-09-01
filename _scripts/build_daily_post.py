@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from tenacity import retry, wait_exponential, stop_after_attempt
 from urllib.parse import urljoin, urlparse
 from openai import OpenAI
+import tqdm
 
 # 전역
 import math, openai
@@ -258,7 +259,7 @@ def main():
 
     # 3) 요약
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-    for it in items:
+    for it in tqdm(items, desc="Paper Summarizing"):
         it["summary_ko"] = summarize_with_gpt(client, it)
         time.sleep(3)
     # print("filtered items : ", len(items))
