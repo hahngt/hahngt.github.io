@@ -24,8 +24,9 @@ def rpm_guard(n=1):
     _rpm_used += n
 
 KST = tz.gettz("Asia/Seoul")
-TODAY_KST = dt.datetime.now(KST).date()
-DATE_STR = os.getenv("DATE", str(TODAY_KST))  # 재실행/백필 시 DATE=YYYY-MM-DD 로 override
+# 기본 날짜를 '어제(KST)'로 설정. 환경변수 DATE 로 override 가능.
+YESTERDAY_KST = (dt.datetime.now(KST) - dt.timedelta(days=1)).date()
+DATE_STR = os.getenv("DATE", str(YESTERDAY_KST))  # 재실행/백필 시 DATE=YYYY-MM-DD 로 override
 HF_BASE = "https://huggingface.co"
 HF_DAY_URL = f"{HF_BASE}/papers/date/{DATE_STR}"
 HEADERS = {"User-Agent": "Mozilla/5.0 (PaperBot)"}
