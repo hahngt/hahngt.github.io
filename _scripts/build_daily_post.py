@@ -237,7 +237,7 @@ def main():
 
     # 상한 n개
     N = int(os.getenv("N","10"))
-    paper_urls = paper_urls[:N]
+    # paper_urls = paper_urls[:N]
     # print("paper_urls : ", len(paper_urls))
     # 2) 각 논문 상세 파싱 + arXiv 초록/PDF
     items = []
