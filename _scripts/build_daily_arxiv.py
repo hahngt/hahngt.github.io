@@ -8,7 +8,7 @@ from tenacity import retry, wait_exponential, stop_after_attempt
 from openai import OpenAI
 import openai
 
-import tqdm
+from tqdm import tqdm
 
 # ===== 설정 =====
 KST = tz.gettz("Asia/Seoul")
@@ -159,7 +159,7 @@ def within_last_24h(dt_utc: dt.datetime | None) -> bool:
     if not dt_utc:
         return False
     now_utc = dt.datetime.utcnow().replace(tzinfo=tz.tzutc())
-    return (now_utc - dt_utc) <= dt.timedelta(days=3)
+    return (now_utc - dt_utc) <= dt.timedelta(days=4)
 
 def match_keywords(text: str) -> bool:
     t = (text or "").lower()

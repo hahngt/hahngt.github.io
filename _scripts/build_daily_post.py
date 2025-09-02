@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from tenacity import retry, wait_exponential, stop_after_attempt
 from urllib.parse import urljoin, urlparse
 from openai import OpenAI
-import tqdm
+from tqdm import tqdm
 
 # 전역
 import math, openai
