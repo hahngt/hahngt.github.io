@@ -19,11 +19,17 @@ PDF_MAX_CHARS = int(os.getenv("PDF_MAX_CHARS", "40000"))
 RPM_LIMIT = int(os.getenv("OPENAI_RPM_LIMIT", "3"))
 CATS = ("cs.AI", "cs.LG", "cs.CV", "cs.CL", "cs.MM")
 INCLUDE_KWS = [
-    r"\bdiffusion\b",
-    r"\bvlm\b",
-    r"\bmllm\b",
-    r"multimodal",
+    r"\bdiffusion",
+    r"video",
+    r"generati",
+    r"vlm",
+    r"rectified flow"
+    r"mllm",
+    r"\bCLIP\b",
+    r"multi[-\s]?modal",
     r"flow[-\s]?matching",
+    r"vision[-\s]?language",
+    r"uni[-\s]?modal",
 ]
 WITHDRAWN_RE = re.compile(r"\bwithdrawn\b", re.I)
 
@@ -308,7 +314,7 @@ def main():
         "layout: post",
         f'title: "Arxiv - {DATE_STR}"',
         f"date: {DATE_STR} 08:15:00",
-        "tags: [papers, arxiv, ai]",
+        "tags: [arxiv, multimodal, diffusion, generative AI, vision]",
         "categories: []",
         "---",
         "",
