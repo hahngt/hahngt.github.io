@@ -47,7 +47,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EXCLUDE_UPLOADED: "1"
           SEEN_DB: "_scripts/seen_papers.txt"
-        run: python _scripts/post.py
+        run: python -m _scripts.post
 
       # 생성물 커밋
       - name: Commit & push generated posts and seen db
