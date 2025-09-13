@@ -10,6 +10,10 @@ from tqdm import tqdm
 # 전역
 import math, openai
 
+# 제외 키워드 (정규식, 콤마 구분). 제목/초록/본문에 매치되면 제외
+ENV_EXCLUDE = os.getenv("EXCLUDE_KWS", "").strip()
+EXCLUDE_KWS = [p.strip() for p in ENV_EXCLUDE.split(",") if p.strip()]
+
 RPM_LIMIT = int(os.getenv("OPENAI_RPM_LIMIT","3"))
 _rpm_win = time.monotonic(); _rpm_used = 0
 
@@ -248,6 +252,11 @@ def main():
         # PDF 있으면 본문 텍스트 사용
         pdf_text = fetch_arxiv_pdf_text(meta.get("pdf_url"), max_chars=int(os.getenv("PDF_MAX_CHARS","40000"))) if meta.get("pdf_url") else ""
         meta["source_text"] = pdf_text if pdf_text else meta["abstract"]
+        # 제외 키워드 필터 (제목/초록/본문)
+        if EXCLUDE_KWS:
+            text_all = f"{meta.get('title','')} {meta.get('abstract','')} {meta.get('source_text','')}".lower()
+            if any(re.search(pat, text_all, flags=re.I) for pat in EXCLUDE_KWS):
+                continue
         items.append(meta)
         time.sleep(0.5)
     # print("items : ", len(items))

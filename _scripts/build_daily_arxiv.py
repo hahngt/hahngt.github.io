@@ -18,19 +18,25 @@ N_MAX = int(os.getenv("N", "20"))
 PDF_MAX_CHARS = int(os.getenv("PDF_MAX_CHARS", "40000"))
 RPM_LIMIT = int(os.getenv("OPENAI_RPM_LIMIT", "3"))
 CATS = ("cs.AI", "cs.LG", "cs.CV", "cs.CL", "cs.MM")
+# 포함/제외 키워드 설정 (정규식 허용)
+# - INCLUDE_KWS: 제목/초록에 하나라도 매치되면 포함
+# - EXCLUDE_KWS: 제목/초록에 하나라도 매치되면 제외 (우선순위 더 높음)
 INCLUDE_KWS = [
     r"\bdiffusion",
     r"video",
     r"generati",
     r"vlm",
-    r"rectified flow"
+    r"rectified flow",
     r"mllm",
     r"\bCLIP\b",
     r"multi[-\s]?modal",
     r"flow[-\s]?matching",
     r"vision[-\s]?language",
     r"uni[-\s]?modal",
+    r"image",
 ]
+ENV_EXCLUDE = os.getenv("EXCLUDE_KWS", "").strip()
+EXCLUDE_KWS = [p.strip() for p in ENV_EXCLUDE.split(",") if p.strip()]
 WITHDRAWN_RE = re.compile(r"\bwithdrawn\b", re.I)
 
 OUT_DIR = "_posts"
@@ -171,6 +177,12 @@ def match_keywords(text: str) -> bool:
     t = (text or "").lower()
     return any(re.search(pat, t, flags=re.I) for pat in INCLUDE_KWS)
 
+def match_exclude(text: str) -> bool:
+    if not EXCLUDE_KWS:
+        return False
+    t = (text or "").lower()
+    return any(re.search(pat, t, flags=re.I) for pat in EXCLUDE_KWS)
+
 def fetch_pdf_text(pdf_url: str | None, max_chars: int) -> str:
     if not pdf_url:
         return ""
@@ -253,17 +265,26 @@ def main():
     print(len(entries), "entries")
     for e in entries[:10]: print(e['title'], e['published_dt'], e['primary'])
     # 필터
+    
     filt = []
     for e in entries:
         # 날짜 24h
         if not within_last_24h(e["published_dt"] or e["updated_dt"]):
             continue
+        filt.append(e)
+    print(len(filt), "papers in 24 hours")
+    entries = filt
+    filt = []
+    for e in entries:
         # primary 카테고리 제한
         if e["primary"] not in CATS:
             continue
         # withdrawn 제외(제목/초록/코멘트)
         text_all = f"{e['title']} {e['summary']}"
         if WITHDRAWN_RE.search(text_all):
+            continue
+        # 제외 키워드 우선 적용
+        if match_exclude(text_all):
             continue
         # 키워드 포함(제목+초록)
         if not match_keywords(text_all):
@@ -272,6 +293,7 @@ def main():
     print(len(filt), "after filtering")
     
     if len(filt) == 0:
+        print("No new papers found.")
         return
     
     # ID 기준 dedupe & seen DB 제외
@@ -328,6 +350,7 @@ def main():
         body.append("")
         body.append(it.get("summary_ko", ""))
         body.append("")
+
 
     md = "\n".join(front + body)
 

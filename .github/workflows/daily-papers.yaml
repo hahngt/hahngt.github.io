@@ -47,6 +47,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EXCLUDE_UPLOADED: "1"
           SEEN_DB: "_scripts/seen_papers.txt"
+          EXCLUDE_KWS: "robotic,autonomous,autonomy,vehicle,driving,radar,lidar,slam,planning,healthcare,medical,brain,neuroscience,drug,molecule,protein,genomics,biology,chemistry,human-object interactions,reinforcement learning,Vision-Language-Action"
         run: python -m _scripts.post
 
       # 생성물 커밋
