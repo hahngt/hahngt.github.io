@@ -230,15 +230,33 @@ def summarize_with_gpt(client, item):
     raise RuntimeError("OpenAI rate limit persistent")
 
 def main():
-    # 1) Daily 목록 수집
-    daily_html = get(HF_DAY_URL).text
+    # 0) 주말(토/일)은 스킵 (HF Daily가 업데이트되지 않음)
+    try:
+        target_date = dt.date.fromisoformat(DATE_STR)
+    except Exception:
+        target_date = None
+    if target_date and target_date.weekday() >= 5:  # 5=토, 6=일
+        print(f"Skip: {DATE_STR} is weekend; HF Daily not updated.")
+        return
+
+    # 1) Daily 목록 수집 (리다이렉션으로 다른 날짜로 이동 시 스킵)
+    daily_resp = get(HF_DAY_URL)
+    # 최종 URL이 다른 날짜로 리다이렉트되면 해당 날짜 포스트 생성을 건너뜀
+    try:
+        final_path = urlparse(daily_resp.url).path
+        m = re.match(r"^/papers/date/(\d{4}-\d{2}-\d{2})$", final_path)
+        if m and m.group(1) != DATE_STR:
+            print(f"Skip: requested {DATE_STR} redirected to {m.group(1)}; avoid duplicating Friday posts.")
+            return
+    except Exception:
+        pass
+
+    daily_html = daily_resp.text
     paper_urls = parse_daily_list(daily_html)
     if not paper_urls:
-        # 당일 비어있으면 전일로 백오프
-        prev = (dt.datetime.fromisoformat(DATE_STR) - dt.timedelta(days=1)).date()
-        alt_url = f"{HF_BASE}/papers/date/{prev}"
-        daily_html = get(alt_url).text
-        paper_urls = parse_daily_list(daily_html)
+        # 해당 날짜에 Daily Papers가 없으면 중단 (전날로 이동하지 않음)
+        print(f"No Daily Papers on {DATE_STR}. Stop.")
+        return
 
     # 상한 n개
     N = int(os.getenv("N","10"))
@@ -278,7 +296,7 @@ def main():
     front = [
         "---",
         "layout: post",
-        f'title: Daily Papers — {DATE_STR}"',
+        f'title: "Daily Papers — {DATE_STR}"',
         f"date: {DATE_STR} 08:15:00",
         "tags: [papers, hugginface]",
         "categories: []",

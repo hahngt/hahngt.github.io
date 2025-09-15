@@ -2,7 +2,8 @@ name: Daily HF Papers
 
 on:
   schedule:
-    - cron: "15 0 * * *" # 09:15 KST
+    # - cron: "15 0 * * *" # 09:15 KST
+    - cron: "15 22 * * *" # 07:15 KST
   workflow_dispatch: {}
 
 permissions:
