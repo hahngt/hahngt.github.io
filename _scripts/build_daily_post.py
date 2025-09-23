@@ -307,8 +307,11 @@ def main():
     body = []
     for i, it in enumerate(items, 1):
         link = it.get("arxiv_url") or it["hf_url"]
+        id_arxiv = link.split('/')[-1]
         title_one = it["title"].replace("\n", " ")
         body.append(f"# {i}. [{title_one}]({link})")
+        body.append("")
+        body.append(f"> [Alphaxiv](https://www.alphaxiv.org/ko/overview/{id_arxiv})")
         body.append("")
         body.append(it["summary_ko"])
         body.append("")
