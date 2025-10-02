@@ -20,4 +20,5 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
+I am pursuing a master's degree at Korea University and am studying multi-modal learning.
 I'm interested in developing an efficient learning framework that can mimic human multisensory reasoning, primarily visual, and designing models that enable natural interactions with humans in various situations.
